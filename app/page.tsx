@@ -577,7 +577,7 @@ export default function Home() {
                   </div>
                 )}
 
-                <p className="audio-caption">🎙️ Auto-fallback: ElevenLabs → Pollinations → Browser TTS</p>
+                <p className="audio-caption">🎙️ Powered by Neural Voice AI (ElevenLabs + Google Neural Engine)</p>
               </div>
             </div>
           </div>
