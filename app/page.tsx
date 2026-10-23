@@ -1,8 +1,16 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Camera, Upload, ShieldAlert, Loader2, Volume2, Pill, RotateCcw, Mic, X, ScanLine, Sparkles } from 'lucide-react';
+import { Camera, Upload, ShieldAlert, Loader2, Volume2, Pill, RotateCcw, Mic, X, ScanLine, Sparkles, MapPin, ExternalLink, IndianRupee, Store, Stethoscope, Navigation } from 'lucide-react';
 import Tesseract from 'tesseract.js';
+
+interface JanAushadhiData {
+  genericName: string;
+  brandPrice: number;
+  janAushadhiPrice: number;
+  savingsPercent: number;
+  unit: string;
+}
 
 const VOICES = [
   { id: 'alice', name: 'Alice — Clear Educator (Female)' },
@@ -23,8 +31,12 @@ function CameraModal({ onCapture, onClose }: { onCapture: (file: File) => void; 
   useEffect(() => {
     const startCamera = async () => {
       try {
+        if (typeof navigator === 'undefined' || !navigator.mediaDevices || typeof navigator.mediaDevices.getUserMedia !== 'function') {
+          setError('Camera access is not supported on this browser or requires HTTPS. Please use "Upload Image" instead.');
+          return;
+        }
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } },
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } },
           audio: false,
         });
         streamRef.current = stream;
@@ -133,8 +145,10 @@ export default function Home() {
   const [audioMode, setAudioMode] = useState<'elevenlabs' | 'pollinations' | 'browser' | null>(null);
   const [voice, setVoice] = useState('alice');
   const [showCamera, setShowCamera] = useState(false);
+  const [janAushadhi, setJanAushadhi] = useState<JanAushadhiData | null>(null);
 
   const uploadRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
@@ -150,7 +164,7 @@ export default function Home() {
   const reset = () => {
     setPreview(null); setOcrProgress(0); setOcrText(null); setVerdict(null);
     setError(null); setSource(''); setDrugName(''); setAudioUrl(null);
-    setPlaying(false); setAudioMode(null);
+    setPlaying(false); setAudioMode(null); setJanAushadhi(null);
     if (audioRef.current) audioRef.current.pause();
     window.speechSynthesis.cancel();
   };
@@ -183,12 +197,49 @@ export default function Home() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'AI lookup failed');
       setVerdict(data.verdict); setSource(data.source || ''); setDrugName(data.drugName || '');
+      setJanAushadhi(data.janAushadhi || null);
     } catch (e: any) { setError(e.message); }
     finally { setLoading(false); }
   };
 
   const onFileSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0]; if (f) processImage(f);
+    const f = e.target.files?.[0];
+    if (f) {
+      processImage(f);
+    }
+    e.target.value = '';
+  };
+
+  const openNearbySearch = (type: 'jan_aushadhi' | 'chemist' | 'clinic') => {
+    const queries = {
+      jan_aushadhi: 'Pradhan Mantri Jan Aushadhi Kendra near me',
+      chemist: '24 hour chemist medical store pharmacy near me',
+      clinic: 'doctor clinic general physician hospital near me',
+    };
+    const query = queries[type];
+
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude } = pos.coords;
+          window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}/@${latitude},${longitude},14z`, '_blank');
+        },
+        () => {
+          window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
+        },
+        { timeout: 6000 }
+      );
+    } else {
+      window.open(`https://www.google.com/maps/search/${encodeURIComponent(query)}`, '_blank');
+    }
+  };
+
+  const handleCameraClick = () => {
+    if (typeof navigator !== 'undefined' && navigator.mediaDevices && typeof navigator.mediaDevices.getUserMedia === 'function') {
+      setShowCamera(true);
+    } else {
+      cameraInputRef.current?.click();
+    }
   };
 
   const generateAudio = async () => {
@@ -264,19 +315,36 @@ export default function Home() {
             Take a photo or upload an image of any medicine strip. Get instant info — what it is, uses, dosage &amp; side effects in Hindi &amp; English.
           </p>
 
-          <input ref={uploadRef} type="file" accept="image/*" onChange={onFileSelected} style={{ display: 'none' }} />
+          {/* Native file & camera inputs */}
+          <input
+            id="medicine-file-upload"
+            ref={uploadRef}
+            type="file"
+            accept="image/*"
+            onChange={onFileSelected}
+            style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', border: 0 }}
+          />
+          <input
+            id="medicine-camera-capture"
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={onFileSelected}
+            style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0,0,0,0)', border: 0 }}
+          />
 
           <div className="scan-actions">
-            <button onClick={() => setShowCamera(true)} className="scan-btn">
+            <button type="button" onClick={handleCameraClick} className="scan-btn">
               <div className="scan-btn-icon"><Camera className="w-5 h-5" /></div>
               <span className="scan-btn-label">Take Photo</span>
               <span className="scan-btn-sub">Use camera</span>
             </button>
-            <button onClick={() => uploadRef.current?.click()} className="scan-btn">
+            <label htmlFor="medicine-file-upload" className="scan-btn" style={{ cursor: 'pointer' }}>
               <div className="scan-btn-icon"><Upload className="w-5 h-5" /></div>
               <span className="scan-btn-label">Upload Image</span>
               <span className="scan-btn-sub">From gallery</span>
-            </button>
+            </label>
           </div>
 
           {(preview || verdict) && (
@@ -331,6 +399,136 @@ export default function Home() {
               {source && <span className="source-badge">{source}</span>}
             </div>
             <div className="verdict-body">{verdict}</div>
+
+            {/* ── Jan Aushadhi Savings & Kendra Locator ── */}
+            {janAushadhi && (
+              <div style={{ margin: '0 1.375rem 1.25rem', padding: '1.125rem', background: 'var(--panel-secondary)', border: '1px solid rgba(201, 243, 106, 0.25)', borderRadius: '16px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ fontSize: '1.25rem' }}>🏛️</span>
+                    <div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.01em' }}>
+                        PM Jan Aushadhi Kendra Alternative
+                      </div>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--muted)' }}>
+                        Govt. Certified Generic Medicine
+                      </div>
+                    </div>
+                  </div>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#09130F', background: 'var(--lime)', padding: '0.25rem 0.65rem', borderRadius: '100px', letterSpacing: '0.04em' }}>
+                    SAVE {janAushadhi.savingsPercent}%
+                  </span>
+                </div>
+
+                <div style={{ fontSize: '0.8rem', color: 'var(--muted)', marginBottom: '0.85rem', lineHeight: 1.5 }}>
+                  <span>Generic Salt:</span> <b style={{ color: 'var(--text)' }}>{janAushadhi.genericName}</b> <span style={{ fontSize: '0.72rem', color: 'var(--muted)' }}>({janAushadhi.unit})</span>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.85rem' }}>
+                  <div style={{ background: 'var(--panel)', border: '1px solid var(--glass-border)', borderRadius: '10px', padding: '0.65rem 0.85rem' }}>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Branded Market Price</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--orange)', textDecoration: 'line-through', marginTop: '0.2rem' }}>
+                      ₹{janAushadhi.brandPrice}
+                    </div>
+                  </div>
+
+                  <div style={{ background: 'rgba(201, 243, 106, 0.1)', border: '1px solid rgba(201, 243, 106, 0.3)', borderRadius: '10px', padding: '0.65rem 0.85rem' }}>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--lime)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Jan Aushadhi Gov Price</div>
+                    <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--lime)', marginTop: '0.2rem' }}>
+                      ₹{janAushadhi.janAushadhiPrice}
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Live Healthcare Finder (GPS Enabled) ── */}
+                <div style={{ marginTop: '0.85rem', paddingTop: '0.85rem', borderTop: '1px solid var(--glass-border)' }}>
+                  <div style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.6rem' }}>
+                    <Navigation className="w-3.5 h-3.5 text-[#C9F36A]" />
+                    <span>Find Near Your Live Location:</span>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.5rem' }}>
+                    {/* 1. Jan Aushadhi */}
+                    <button
+                      type="button"
+                      onClick={() => openNearbySearch('jan_aushadhi')}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        padding: '0.65rem 0.75rem',
+                        background: 'rgba(201, 243, 106, 0.12)',
+                        border: '1px solid rgba(201, 243, 106, 0.35)',
+                        borderRadius: '10px',
+                        color: 'var(--text)',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '0.3rem' }}>
+                        <span style={{ fontSize: '1rem' }}>🏛️</span>
+                        <ExternalLink className="w-3 h-3 opacity-70" />
+                      </div>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--lime)' }}>Jan Aushadhi</div>
+                      <div style={{ fontSize: '0.62rem', color: 'var(--muted)' }}>Govt Generic (Save 80%)</div>
+                    </button>
+
+                    {/* 2. Private Chemist */}
+                    <button
+                      type="button"
+                      onClick={() => openNearbySearch('chemist')}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        padding: '0.65rem 0.75rem',
+                        background: 'var(--panel)',
+                        border: '1px solid var(--glass-border)',
+                        borderRadius: '10px',
+                        color: 'var(--text)',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '0.3rem' }}>
+                        <Store className="w-4 h-4 text-[#93C7FF]" />
+                        <ExternalLink className="w-3 h-3 opacity-70" />
+                      </div>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text)' }}>Private Chemist</div>
+                      <div style={{ fontSize: '0.62rem', color: 'var(--muted)' }}>24/7 Apollo & Local Store</div>
+                    </button>
+
+                    {/* 3. Doctor / Clinic */}
+                    <button
+                      type="button"
+                      onClick={() => openNearbySearch('clinic')}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                        padding: '0.65rem 0.75rem',
+                        background: 'var(--panel)',
+                        border: '1px solid var(--glass-border)',
+                        borderRadius: '10px',
+                        color: 'var(--text)',
+                        cursor: 'pointer',
+                        textAlign: 'left',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginBottom: '0.3rem' }}>
+                        <Stethoscope className="w-4 h-4 text-[#FF9B69]" />
+                        <ExternalLink className="w-3 h-3 opacity-70" />
+                      </div>
+                      <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text)' }}>Doctor / Clinic</div>
+                      <div style={{ fontSize: '0.62rem', color: 'var(--muted)' }}>GPs & Health Centres</div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* ── Audio panel ── */}
             <div style={{ padding: '0 1.375rem 1.375rem' }}>

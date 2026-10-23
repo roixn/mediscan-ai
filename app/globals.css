@@ -3,18 +3,24 @@
 
 :root {
   color-scheme: dark;
-  --bg: #030712;
-  --surface: rgba(255,255,255,0.03);
-  --surface-hover: rgba(255,255,255,0.06);
-  --glass: rgba(255,255,255,0.05);
-  --glass-border: rgba(255,255,255,0.10);
-  --text: #f1f5f9;
-  --muted: #64748b;
-  --muted2: #94a3b8;
-  --accent: #4CBB17;
-  --accent2: #22c55e;
-  --success: #4CBB17;
-  --warning: #f59e0b;
+  --bg: #09130F;
+  --panel: #101D18;
+  --panel-secondary: #15251E;
+  --surface: #101D18;
+  --surface-hover: #15251E;
+  --glass: #101D18;
+  --glass-border: rgba(167, 181, 170, 0.16);
+  --text: #F4F6E9;
+  --muted: #A7B5AA;
+  --muted2: #A7B5AA;
+  --lime: #C9F36A;
+  --mint: #7EE0B1;
+  --orange: #FF9B69;
+  --blue: #93C7FF;
+  --accent: #C9F36A;
+  --accent2: #7EE0B1;
+  --success: #7EE0B1;
+  --warning: #FF9B69;
   --font-heading: "Inter", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
@@ -34,14 +40,14 @@ html, body {
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 9999px; }
+::-webkit-scrollbar-thumb { background: rgba(167, 181, 170, 0.2); border-radius: 9999px; }
 
 /* ── Background mesh ── */
 .app-shell {
   min-height: 100vh;
   background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(76,187,23,0.15) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(34,197,94,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(201, 243, 106, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(126, 224, 177, 0.06) 0%, transparent 60%),
     var(--bg);
   overflow-x: hidden;
 }
@@ -53,7 +59,7 @@ html, body {
   z-index: 40;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  background: rgba(3,7,18,0.8);
+  background: rgba(9, 19, 15, 0.85);
   border-bottom: 1px solid var(--glass-border);
   padding: 1rem 1.5rem;
 }
@@ -70,13 +76,13 @@ html, body {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, var(--lime), var(--mint));
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 0 20px rgba(76,187,23,0.4);
-  color: #fff;
+  box-shadow: 0 0 20px rgba(201, 243, 106, 0.35);
+  color: #09130F;
 }
 
 .app-header h1 {
@@ -101,9 +107,9 @@ html, body {
   gap: 0.4rem;
   font-size: 0.65rem;
   font-weight: 600;
-  color: var(--success);
-  background: rgba(16,185,129,0.1);
-  border: 1px solid rgba(16,185,129,0.25);
+  color: var(--mint);
+  background: rgba(126, 224, 177, 0.12);
+  border: 1px solid rgba(126, 224, 177, 0.3);
   border-radius: 9999px;
   padding: 0.3rem 0.75rem;
   letter-spacing: 0.05em;
@@ -115,7 +121,7 @@ html, body {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--success);
+  background: var(--mint);
   animation: status-pulse 2.4s ease-in-out infinite;
   flex-shrink: 0;
 }
@@ -132,7 +138,7 @@ html, body {
 
 /* ── Glass card base ── */
 .glass-card {
-  background: var(--glass);
+  background: var(--panel);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   backdrop-filter: blur(12px);
@@ -141,20 +147,20 @@ html, body {
 
 /* ── Notice card ── */
 .notice-card {
-  background: rgba(245,158,11,0.06);
-  border: 1px solid rgba(245,158,11,0.2);
+  background: rgba(255, 155, 105, 0.08);
+  border: 1px solid rgba(255, 155, 105, 0.25);
   border-radius: 14px;
   padding: 0.875rem 1.125rem;
   font-size: 0.8rem;
-  color: #d97706;
+  color: var(--orange);
   line-height: 1.7;
 }
 
-.notice-card b { color: #f59e0b; font-weight: 600; }
+.notice-card b { color: var(--text); font-weight: 600; }
 
 /* ── Hero scan card ── */
 .scan-card {
-  background: var(--glass);
+  background: var(--panel);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
   padding: clamp(2rem, 6vw, 3rem);
@@ -169,7 +175,7 @@ html, body {
   top: -60px; left: 50%;
   transform: translateX(-50%);
   width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(76,187,23,0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(201, 243, 106, 0.12) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -179,9 +185,9 @@ html, body {
   gap: 0.4rem;
   font-size: 0.65rem;
   font-weight: 600;
-  color: var(--accent);
-  background: rgba(76,187,23,0.1);
-  border: 1px solid rgba(76,187,23,0.25);
+  color: var(--lime);
+  background: rgba(201, 243, 106, 0.1);
+  border: 1px solid rgba(201, 243, 106, 0.25);
   border-radius: 9999px;
   padding: 0.3rem 0.875rem;
   letter-spacing: 0.08em;
@@ -199,7 +205,7 @@ html, body {
 }
 
 .scan-card h2 span {
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, var(--lime), var(--mint));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -207,7 +213,7 @@ html, body {
 
 .scan-description {
   font-size: 0.875rem;
-  color: var(--muted2);
+  color: var(--muted);
   line-height: 1.7;
   max-width: 34rem;
   margin: 0 auto 2rem;
@@ -230,7 +236,7 @@ html, body {
   padding: 1.5rem 1rem;
   border-radius: 16px;
   border: 1px solid var(--glass-border);
-  background: var(--glass);
+  background: var(--panel-secondary);
   color: var(--text);
   cursor: pointer;
   transition: all 200ms ease;
@@ -242,17 +248,18 @@ html, body {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, var(--lime), var(--mint));
   opacity: 0;
   transition: opacity 200ms ease;
   border-radius: inherit;
+  pointer-events: none;
 }
 
-.scan-btn:hover::before { opacity: 0.12; }
+.scan-btn:hover::before { opacity: 0.08; }
 .scan-btn:hover {
-  border-color: rgba(76,187,23,0.4);
+  border-color: rgba(201, 243, 106, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(76,187,23,0.15);
+  box-shadow: 0 8px 32px rgba(201, 243, 106, 0.12);
 }
 .scan-btn:active { transform: translateY(0); }
 
@@ -261,12 +268,12 @@ html, body {
   width: 3rem;
   height: 3rem;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(76,187,23,0.2), rgba(34,197,94,0.2));
-  border: 1px solid rgba(76,187,23,0.3);
+  background: linear-gradient(135deg, rgba(201, 243, 106, 0.15), rgba(126, 224, 177, 0.15));
+  border: 1px solid rgba(201, 243, 106, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
+  color: var(--lime);
 }
 
 .scan-btn-label {
@@ -301,7 +308,7 @@ html, body {
 
 /* ── Result cards ── */
 .result-card {
-  background: var(--glass);
+  background: var(--panel);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 1.25rem;
@@ -320,20 +327,20 @@ html, body {
 /* ── Loading ── */
 .progress-track {
   height: 2px;
-  background: rgba(255,255,255,0.06);
+  background: rgba(167, 181, 170, 0.1);
   border-radius: 9999px;
   overflow: hidden;
 }
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  background: linear-gradient(90deg, var(--lime), var(--mint));
   border-radius: 9999px;
   transition: width 200ms ease;
 }
 
 /* ── Verdict / medicine info ── */
 .verdict-card {
-  background: var(--glass);
+  background: var(--panel);
   border: 1px solid var(--glass-border);
   border-radius: 20px;
   overflow: hidden;
@@ -345,7 +352,7 @@ html, body {
   justify-content: space-between;
   padding: 1.125rem 1.375rem;
   border-bottom: 1px solid var(--glass-border);
-  background: rgba(76,187,23,0.06);
+  background: rgba(21, 37, 30, 0.6);
 }
 
 .verdict-title {
@@ -362,20 +369,20 @@ html, body {
   width: 2rem;
   height: 2rem;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  background: linear-gradient(135deg, var(--lime), var(--mint));
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: #09130F;
   flex-shrink: 0;
 }
 
 .source-badge {
   font-size: 0.6rem;
   font-weight: 600;
-  color: var(--success);
-  background: rgba(76,187,23,0.1);
-  border: 1px solid rgba(76,187,23,0.25);
+  color: var(--mint);
+  background: rgba(126, 224, 177, 0.12);
+  border: 1px solid rgba(126, 224, 177, 0.3);
   border-radius: 9999px;
   padding: 0.25rem 0.625rem;
   text-transform: uppercase;
@@ -386,7 +393,7 @@ html, body {
 .verdict-body {
   padding: 1.375rem;
   font-size: 0.85rem;
-  color: var(--muted2);
+  color: var(--text);
   line-height: 1.8;
   white-space: pre-wrap;
   font-family: var(--font-body);
@@ -394,8 +401,8 @@ html, body {
 
 /* ── Audio panel ── */
 .audio-panel {
-  background: rgba(76,187,23,0.06);
-  border: 1px solid rgba(76,187,23,0.18);
+  background: var(--panel-secondary);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 1.25rem;
   margin-top: 0;
@@ -419,8 +426,8 @@ html, body {
 
 .voice-select {
   font-size: 0.7rem;
-  color: var(--muted2);
-  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  background: var(--panel);
   border: 1px solid var(--glass-border);
   border-radius: 8px;
   padding: 0.35rem 0.625rem;
@@ -437,18 +444,18 @@ html, body {
   padding: 0.875rem 1.5rem;
   border-radius: 12px;
   border: none;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
+  background: linear-gradient(135deg, var(--lime), var(--mint));
+  color: #09130F;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 200ms ease;
-  box-shadow: 0 4px 20px rgba(76,187,23,0.35);
+  box-shadow: 0 4px 20px rgba(201, 243, 106, 0.35);
 }
 
 .listen-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 8px 28px rgba(76,187,23,0.45);
+  box-shadow: 0 8px 28px rgba(201, 243, 106, 0.45);
 }
 .listen-btn:active:not(:disabled) { transform: translateY(0); }
 .listen-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -457,7 +464,7 @@ html, body {
   width: 100%;
   height: 44px;
   border-radius: 8px;
-  accent-color: var(--accent);
+  accent-color: var(--lime);
 }
 
 .replay-btn {
@@ -470,7 +477,7 @@ html, body {
   border-radius: 10px;
   border: 1px solid var(--glass-border);
   background: transparent;
-  color: var(--muted2);
+  color: var(--muted);
   font-size: 0.75rem;
   cursor: pointer;
   transition: all 160ms ease;
@@ -487,24 +494,24 @@ html, body {
 }
 
 .browser-tts-status {
-  background: rgba(16,185,129,0.08);
-  border: 1px solid rgba(16,185,129,0.2);
+  background: rgba(126, 224, 177, 0.1);
+  border: 1px solid rgba(126, 224, 177, 0.3);
   border-radius: 10px;
   padding: 0.625rem 1rem;
   text-align: center;
   font-size: 0.75rem;
-  color: var(--success);
+  color: var(--mint);
   margin-bottom: 0.625rem;
 }
 
 /* ── Error card ── */
 .error-card {
-  background: rgba(239,68,68,0.06);
-  border: 1px solid rgba(239,68,68,0.2);
+  background: rgba(255, 155, 105, 0.08);
+  border: 1px solid rgba(255, 155, 105, 0.25);
   border-radius: 14px;
   padding: 1rem 1.25rem;
   font-size: 0.8rem;
-  color: #f87171;
+  color: var(--orange);
   line-height: 1.7;
 }
 
@@ -512,7 +519,7 @@ html, body {
 .camera-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.97);
+  background: rgba(9, 19, 15, 0.98);
   z-index: 50;
   display: flex;
   flex-direction: column;
@@ -527,14 +534,14 @@ html, body {
   top: 1rem; right: 1rem;
   width: 2.25rem; height: 2.25rem;
   border-radius: 10px;
-  background: rgba(255,255,255,0.07);
+  background: var(--panel-secondary);
   border: 1px solid var(--glass-border);
   color: var(--text);
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background 160ms ease;
 }
-.camera-close-btn:hover { background: rgba(255,255,255,0.12); }
+.camera-close-btn:hover { background: rgba(167, 181, 170, 0.2); }
 
 .camera-preview {
   border: 1px solid var(--glass-border);
@@ -547,7 +554,7 @@ html, body {
 .camera-frame {
   position: absolute;
   inset: 1rem;
-  border: 1.5px solid rgba(76,187,23,0.55);
+  border: 1.5px solid rgba(201, 243, 106, 0.55);
   border-radius: 12px;
   pointer-events: none;
 }
@@ -558,20 +565,20 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.7);
+  background: rgba(9, 19, 15, 0.85);
   color: var(--text);
   flex-direction: column;
   gap: 0.5rem;
 }
 
 .camera-message {
-  background: var(--glass);
+  background: var(--panel);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   padding: 2rem;
   text-align: center;
   max-width: 24rem;
-  color: var(--muted2);
+  color: var(--muted);
   font-size: 0.85rem;
   line-height: 1.7;
 }
@@ -591,14 +598,14 @@ html, body {
   padding: 0.75rem 1.5rem;
   border-radius: 12px;
   border: 1px solid var(--glass-border);
-  background: var(--glass);
+  background: var(--panel-secondary);
   color: var(--text);
   font-size: 0.825rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 160ms ease;
 }
-.camera-btn:hover { background: var(--surface-hover); border-color: rgba(255,255,255,0.2); }
+.camera-btn:hover { background: var(--surface-hover); border-color: rgba(167, 181, 170, 0.35); }
 
 .camera-capture-btn {
   display: inline-flex;
@@ -608,15 +615,15 @@ html, body {
   padding: 0.875rem 2rem;
   border-radius: 12px;
   border: none;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  color: #fff;
+  background: linear-gradient(135deg, var(--lime), var(--mint));
+  color: #09130F;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 200ms ease;
-  box-shadow: 0 4px 20px rgba(76,187,23,0.35);
+  box-shadow: 0 4px 20px rgba(201, 243, 106, 0.35);
 }
-.camera-capture-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(76,187,23,0.45); }
+.camera-capture-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(201, 243, 106, 0.45); }
 .camera-capture-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── Scanned image ── */
@@ -631,8 +638,8 @@ html, body {
 .ocr-text {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  color: var(--muted2);
-  background: rgba(255,255,255,0.03);
+  color: var(--text);
+  background: var(--panel-secondary);
   border: 1px solid var(--glass-border);
   border-radius: 10px;
   padding: 0.75rem;
@@ -651,7 +658,7 @@ html, body {
   padding-bottom: 1rem;
   line-height: 1.9;
 }
-.app-footer b { color: var(--muted2); font-weight: 500; }
+.app-footer b { color: var(--text); font-weight: 500; }
 
 /* ── Animations ── */
 .rise-in {
